@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+div#memory_board{
+	background:#339966;
+	border:#999 1px solid;
+	width:800px;
+	height:540px;
+	padding:24px;
+	margin:0px auto;
+}
+div#memory_board > div{
+	background: url(tile_bg.jpg) no-repeat;
+	border:#000 1px solid;
+	width:71px;
+	height:71px;
+	float:left;
+	margin:10px;
+	padding:20px;
+	font-size:64px;
+	font-weight: bold;
+	font-family: sans-serif;
+	cursor:pointer;
+	text-align:center;
+	color: #000;
+}
+.button {
+color: #fff;
+background-color: black;
+border: 0px;
+}
+</style>
+<script>
+// Scripted By Adam Khoury in connection with the following video tutorial:
+// http://www.youtube.com/watch?v=c_ohDPWmsM0
+var memory_array = ['A','A','B','B','C','C','D','D','E','E','F','F','G','G','H','H','I','I','J','J','K','K','L','L'];
+var memory_values = [];
+var memory_tile_ids = [];
+var memory_numbers = [];
+var tiles_flipped = 0;
+
+Array.prototype.memory_tile_shuffle = function(){
+    var i = this.length, j, temp;
+    while(--i > 0){
+        j = Math.floor(Math.random() * (i+1));
+        temp = this[j];
+        this[j] = this[i];
+        this[i] = temp;
+    }
+}
+
+function newBoard(){
+	tiles_flipped = 0;
+	var output = '';
+	var cardnumber = 0;
+    memory_array.memory_tile_shuffle();
+	for(var i = 0; i < memory_array.length; i++){
+		cardnumber = i+1;
+		output += '<div id="tile_'+i+'" onclick="memoryFlipTile(this,\''+memory_array[i]+'\')">'+cardnumber+'</div>';
+	}
+	document.getElementById('memory_board').innerHTML = output;
+}
+function memoryFlipTile(tile,val){
+	memory_numbers[memory_values.length] = tile.innerHTML;
+	show_SoundMessage(val);
+	if(tile.innerHTML != "" && memory_values.length < 2){
+		
+		tile.style.background = 'url(tile_bg2.jpg) no-repeat';
+		tile.style.color = '#ffffff';
+		tile.innerHTML = '';
+		if(memory_values.length == 0){
+			memory_values.push(val);
+			memory_tile_ids.push(tile.id);
+		} else if(memory_values.length == 1){
+			memory_values.push(val);
+			memory_tile_ids.push(tile.id);
+			if(memory_values[0] == memory_values[1]){
+				tiles_flipped += 2;
+				// Clear both arrays
+				memory_values = [];
+            	memory_tile_ids = [];
+				// Check to see if the whole board is cleared
+				if(tiles_flipped == memory_array.length){
+					alert("Board cleared... generating new board");
+					document.getElementById('memory_board').innerHTML = "";
+					newBoard();
+				}
+			} else {
+				function flip2Back(){
+				    // Flip the 2 tiles back over
+				    var tile_1 = document.getElementById(memory_tile_ids[0]);
+				    var tile_2 = document.getElementById(memory_tile_ids[1]);
+				    tile_1.style.background = 'url(tile_bg.jpg) no-repeat';
+					tile_1.style.color = '#000000';
+            	    tile_1.innerHTML = memory_numbers[0];
+				    tile_2.style.background = 'url(tile_bg.jpg) no-repeat';
+					tile_2.style.color = '#000000';
+            	    tile_2.innerHTML = memory_numbers[1];
+				    // Clear both arrays
+				    memory_values = [];
+            	    memory_tile_ids = [];
+				}
+				setTimeout(flip2Back, 5000);
+			}
+		}
+	}
+}
+
+function loadSound(name){
+  var sound = sounds[name];
+
+  var url = sound.url;
+  var buffer = sound.buffer;
+
+  var request = new XMLHttpRequest();
+  request.open('GET', url, true);
+  request.responseType = 'arraybuffer';
+
+  request.onload = function() {
+    soundContext.decodeAudioData(request.response, function(newBuffer) {
+      sound.buffer = newBuffer;
+    });
+  }
+
+  request.send();
+}
+
+function show_SoundMessage(val) {
+  var soundfile = val+".m4a";
+  var sound_id = "soundbox";
+  var sound_message = '<audio id="audiofile" preload="auto">';
+  sound_message += '<source src="' + soundfile + '" />';
+  sound_message += '</audio>';
+  document.getElementById(sound_id).innerHTML = sound_message;
+  document.getElementById('audiofile').play();
+}
+
+</script>
+</head>
+<body style="background-color: black; text-align: center; color: #fff;">
+<h1 style="font-family: sans-serif;">Adonia Sound Memo </h1>
+<div id="memory_board"></div>
+<div id="soundbox"></div>
+<form><input type="submit" class="button" value="(Neues Spiel)" /></form>
+<script>newBoard();</script>
+
+<audio id="audiofile" preload="auto" src="./A.m4a" >
+<audio id="audiofile" preload="auto" src="./B.m4a" >
+<audio id="audiofile" preload="auto" src="./C.m4a" >
+<audio id="audiofile" preload="auto" src="./D.m4a" >
+<audio id="audiofile" preload="auto" src="./E.m4a" >
+<audio id="audiofile" preload="auto" src="./F.m4a" >
+<audio id="audiofile" preload="auto" src="./G.m4a" >
+<audio id="audiofile" preload="auto" src="./H.m4a" >
+<audio id="audiofile" preload="auto" src="./I.m4a" >
+<audio id="audiofile" preload="auto" src="./J.m4a" >
+<audio id="audiofile" preload="auto" src="./K.m4a" >
+<audio id="audiofile" preload="auto" src="./L.m4a" >
+<audio id="audiofile" preload="auto" src="./M.m4a" >
+<audio id="audiofile" preload="auto" src="./N.m4a" >
+<audio id="audiofile" preload="auto" src="./O.m4a" >
+<audio id="audiofile" preload="auto" src="./P.m4a" >
+</body>
+</html>
