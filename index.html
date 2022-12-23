@@ -3,7 +3,7 @@
 <head>
 <style>
 div#memory_board{
-	background:#339966;
+	background: url(bg.jpg) no-repeat;
 	border:#999 1px solid;
 	width:800px;
 	height:540px;
@@ -82,7 +82,7 @@ function memoryFlipTile(tile,val){
             	memory_tile_ids = [];
 				// Check to see if the whole board is cleared
 				if(tiles_flipped == memory_array.length){
-					alert("Spiel beendet!");
+					alert("Board cleared... generating new board");
 					document.getElementById('memory_board').innerHTML = "";
 					newBoard();
 				}
