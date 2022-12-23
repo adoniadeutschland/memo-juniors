@@ -3,7 +3,7 @@
 <head>
 <style>
 div#memory_board{
-	background:#339966;
+	background:#00628A;
 	border:#999 1px solid;
 	width:800px;
 	height:540px;
@@ -39,6 +39,7 @@ var memory_values = [];
 var memory_tile_ids = [];
 var memory_numbers = [];
 var tiles_flipped = 0;
+var aktiv = 0;
 
 Array.prototype.memory_tile_shuffle = function(){
     var i = this.length, j, temp;
@@ -73,19 +74,23 @@ function memoryFlipTile(tile,val){
 			memory_values.push(val);
 			memory_tile_ids.push(tile.id);
 		} else if(memory_values.length == 1){
-			memory_values.push(val);
+		aktiv = 1;
+		memory_values.push(val);
 			memory_tile_ids.push(tile.id);
 			if(memory_values[0] == memory_values[1]){
 				tiles_flipped += 2;
+				document.getElementById(memory_tile_ids[0]).style.background = 'url(tile_bg3.jpg) no-repeat';
+				document.getElementById(memory_tile_ids[1]).style.background = 'url(tile_bg3.jpg) no-repeat';
 				// Clear both arrays
 				memory_values = [];
             	memory_tile_ids = [];
 				// Check to see if the whole board is cleared
 				if(tiles_flipped == memory_array.length){
-					alert("Board cleared... generating new board");
+					alert("Super, du hast alle Memory Paare gefunden. Ein neues Spiel wird gestartet.");
 					document.getElementById('memory_board').innerHTML = "";
 					newBoard();
 				}
+				aktiv = 0;
 			} else {
 				function flip2Back(){
 				    // Flip the 2 tiles back over
@@ -100,46 +105,55 @@ function memoryFlipTile(tile,val){
 				    // Clear both arrays
 				    memory_values = [];
             	    memory_tile_ids = [];
+					aktiv = 0;
 				}
-				setTimeout(flip2Back, 5000);
+				setTimeout(flip2Back, 7000);
 			}
 		}
 	}
 }
 
+function pausecomp(millis){
+	var date = new Date();
+	var curDate = null;
+	do { curDate = new Date(); }
+		while(curDate-date < millis);
+} 
+
 function loadSound(name){
   var sound = sounds[name];
-
   var url = sound.url;
   var buffer = sound.buffer;
-
   var request = new XMLHttpRequest();
-  request.open('GET', url, true);
-  request.responseType = 'arraybuffer';
 
-  request.onload = function() {
-    soundContext.decodeAudioData(request.response, function(newBuffer) {
-      sound.buffer = newBuffer;
-    });
-  }
+	  request.open('GET', url, true);
+	  request.responseType = 'arraybuffer';
 
-  request.send();
+	  request.onload = function() {
+		soundContext.decodeAudioData(request.response, function(newBuffer) {
+		  sound.buffer = newBuffer;
+		});
+	  }
+
+	  request.send();
 }
 
 function show_SoundMessage(val) {
-  var soundfile = val+".m4a";
-  var sound_id = "soundbox";
-  var sound_message = '<audio id="audiofile" preload="auto">';
-  sound_message += '<source src="' + soundfile + '" />';
-  sound_message += '</audio>';
-  document.getElementById(sound_id).innerHTML = sound_message;
-  document.getElementById('audiofile').play();
+  if(aktiv == 0) {
+	  var soundfile = val+".m4a";
+	  var sound_id = "soundbox";
+	  var sound_message = '<audio id="audiofile" preload="auto">';
+	  sound_message += '<source src="' + soundfile + '" />';
+	  sound_message += '</audio>';
+	  document.getElementById(sound_id).innerHTML = sound_message;
+	  document.getElementById('audiofile').play();
+  }
 }
 
 </script>
 </head>
 <body style="background-color: black; text-align: center; color: #fff;">
-<h1 style="font-family: sans-serif;">Adonia Sound Memo </h1>
+<h1 style="font-family: sans-serif;">Adonia Musik Memo</h1>
 <div id="memory_board"></div>
 <div id="soundbox"></div>
 <form><input type="submit" class="button" value="(Neues Spiel)" /></form>
